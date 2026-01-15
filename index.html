@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-State LLC Registration</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+        }
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1, h2 { color: var(--primary); text-align: center; }
+        
+        /* Select Dropdown Styling */
+        .selector-box {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        select {
+            padding: 12px 20px;
+            font-size: 18px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            width: 100%;
+            max-width: 400px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+        select:focus { border-color: var(--accent); outline: none; }
+
+        /* Form Styling */
+        .form-section { display: none; /* Hidden by default */ }
+        .form-section.active { display: block; animation: fadeIn 0.5s; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #555; }
+        input, textarea, select.inner-select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box; /* Fix padding issues */
+        }
+        input:focus, textarea:focus { border-color: var(--accent); outline: none; }
+        
+        button.submit-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+        button.submit-btn:hover { background-color: #2980b9; }
+
+        .note { font-size: 0.85em; color: #7f8c8d; margin-top: -5px; margin-bottom: 10px; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Loading Overlay */
+        #loading {
+            display: none;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255,255,255,0.8);
+            z-index: 1000;
+            justify-content: center; align-items: center;
+            font-size: 24px; color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Foreign LLC Registration</h1>
+    
+    <div class="selector-box">
+        <label for="stateSelector">Select the State for Registration:</label>
+        <select id="stateSelector">
+            <option value="" disabled selected>-- Choose a State --</option>
+            <option value="Missouri">Missouri (Form LLC-4)</option>
+            <option value="SouthCarolina">South Carolina (Form F0008)</option>
+            <option value="Ohio">Ohio (Form 617)</option>
+        </select>
+    </div>
+
+    <form id="MissouriForm" class="form-section">
+        <h2>Missouri Application</h2>
+        <input type="hidden" name="state" value="Missouri">
+        
+        <div class="form-group">
+            <label>1. Foreign LLC Name</label>
+            <input type="text" name="companyName" required placeholder="Name in home state [cite: 8]">
+        </div>
+        <div class="form-group">
+            <label>2. Name to use in Missouri (if different)</label>
+            <input type="text" name="moName" placeholder="Must contain LLC, L.C., etc. [cite: 9]">
+        </div>
+        <div class="form-group">
+            <label>3. Formed under the laws of:</label>
+            <input type="text" name="originState" placeholder="State/Jurisdiction [cite: 13]" required>
+            <label style="margin-top:10px">Date of Formation:</label>
+            <input type="date" name="formationDate" required [cite: 11]>
+        </div>
+        <div class="form-group">
+            <label>4. Purpose of Business</label>
+            <textarea name="purpose" rows="3" placeholder="General character of business "></textarea>
+        </div>
+        <div class="form-group">
+            <label>5. Registered Agent in Missouri</label>
+            <input type="text" name="agentName" placeholder="Agent Name [cite: 18]" required>
+            <input type="text" name="agentAddress" placeholder="Street Address (No PO Box) [cite: 19]" style="margin-top:5px" required>
+        </div>
+        <div class="form-group">
+            <label>6. Principal Office Address</label>
+            <input type="text" name="principalAddress" placeholder="Address in jurisdiction organized [cite: 23-26]" required>
+        </div>
+        
+        <button type="submit" class="submit-btn">Submit Missouri Application</button>
+    </form>
+
+    <form id="SouthCarolinaForm" class="form-section">
+        <h2>South Carolina Application</h2>
+        <input type="hidden" name="state" value="South Carolina">
+
+        <div class="form-group">
+            <label>1. Foreign LLC Name</label>
+            <input type="text" name="companyName" required placeholder="Exact name of LLC [cite: 60]">
+        </div>
+        <div class="form-group">
+            <label>2. Organized under the laws of:</label>
+            <input type="text" name="originState" placeholder="State or Country [cite: 61]" required>
+        </div>
+        <div class="form-group">
+            <label>3. Principal Office Address</label>
+            <input type="text" name="principalAddress" placeholder="Street Address, City, State, Zip [cite: 62]" required>
+        </div>
+        <div class="form-group">
+            <label>4. Designated Office in South Carolina</label>
+            <input type="text" name="scAddress" placeholder="Street Address in SC [cite: 65]" required>
+        </div>
+        <div class="form-group">
+            <label>5. Agent for Service of Process in SC</label>
+            <input type="text" name="agentName" placeholder="Agent Name [cite: 73]" required>
+            <input type="text" name="agentAddress" placeholder="Agent Street Address [cite: 68]" style="margin-top:5px" required>
+        </div>
+        <div class="form-group">
+            <label>Manager Managed?</label>
+            <select name="isManagerManaged" class="inner-select">
+                <option value="No">No (Member Managed)</option>
+                <option value="Yes">Yes </option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Signer Name</label>
+            <input type="text" name="signerName" required [cite: 97]>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit South Carolina Application</button>
+    </form>
+
+    <form id="OhioForm" class="form-section">
+        <h2>Ohio Registration</h2>
+        <input type="hidden" name="state" value="Ohio">
+
+        <div class="form-group">
+            <label>Name of LLC in Jurisdiction of Formation</label>
+            <input type="text" name="companyName" required [cite: 179]>
+        </div>
+        <div class="form-group">
+            <label>Assumed Name (if original unavailable in Ohio)</label>
+            <input type="text" name="assumedName" placeholder="Must include LLC, Ltd, etc. [cite: 181]">
+        </div>
+        <div class="form-group">
+            <label>Jurisdiction of Formation</label>
+            <input type="text" name="originState" required [cite: 183]>
+        </div>
+        <div class="form-group">
+            <label>Appointment of Statutory Agent</label>
+            <input type="text" name="agentName" placeholder="Agent Name [cite: 201]" required>
+            <input type="text" name="agentAddress" placeholder="Mailing Address (Ohio Only) [cite: 203]" style="margin-top:5px" required>
+            <input type="text" name="agentZip" placeholder="Zip Code [cite: 213]" style="margin-top:5px" required>
+        </div>
+        <div class="form-group">
+            <label>Authorized Representative</label>
+            <input type="text" name="signerName" placeholder="Print Name [cite: 232]" required>
+        </div>
+
+        <button type="submit" class="submit-btn">Submit Ohio Application</button>
+    </form>
+
+</div>
+
+<div id="loading">Submitting to Database...</div>
+
+<script>
+    // --- CONFIGURATION ---
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXxMdA3snYzh3IWNYJYxNqp_PzjeimG0ajM4DhOu2KkAGmoDyaDFZ71QiqQC_ICXFhCg/exec'; 
+    // Paste your Web App URL inside the quotes above
+
+    // --- UI LOGIC ---
+    const selector = document.getElementById('stateSelector');
+    const forms = document.querySelectorAll('.form-section');
+
+    selector.addEventListener('change', function() {
+        // Hide all forms
+        forms.forEach(f => f.classList.remove('active'));
+        
+        // Show selected form
+        const selectedValue = this.value;
+        if(selectedValue === 'Missouri') document.getElementById('MissouriForm').classList.add('active');
+        if(selectedValue === 'SouthCarolina') document.getElementById('SouthCarolinaForm').classList.add('active');
+        if(selectedValue === 'Ohio') document.getElementById('OhioForm').classList.add('active');
+    });
+
+    // --- SUBMISSION LOGIC ---
+    const handleFormSubmit = (e) => {
+        e.preventDefault(); // Stop default reload
+        const form = e.target;
+        const loading = document.getElementById('loading');
+        
+        loading.style.display = 'flex';
+
+        // Create form data object
+        const formData = new FormData(form);
+        const data = {};
+        formData.forEach((value, key) => data[key] = value);
+
+        // Send to Google Sheets
+        fetch(SCRIPT_URL + new URLSearchParams(data), {
+            method: 'POST',
+            mode: 'no-cors', // Important for Google Apps Script on static sites
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: new URLSearchParams(data)
+        })
+        .then(() => {
+            loading.style.display = 'none';
+            alert('Success! Your ' + data.state + ' form has been recorded.');
+            form.reset();
+        })
+        .catch(error => {
+            loading.style.display = 'none';
+            console.error('Error:', error);
+            alert('Something went wrong. Check console.');
+        });
+    };
+
+    // Attach listener to all forms
+    document.getElementById('MissouriForm').addEventListener('submit', handleFormSubmit);
+    document.getElementById('SouthCarolinaForm').addEventListener('submit', handleFormSubmit);
+    document.getElementById('OhioForm').addEventListener('submit', handleFormSubmit);
+
+</script>
+
+</body>
+</html>
