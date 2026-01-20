@@ -597,39 +597,58 @@
             if (selectedValue === 'Ohio') document.getElementById('OhioForm').classList.add('active');
         });
 
-        // --- SUBMISSION LOGIC ---
-        const handleFormSubmit = (e) => {
-            e.preventDefault(); // Stop default reload
-            const form = e.target;
-            const loading = document.getElementById('loading');
 
-            loading.style.display = 'flex';
+        const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const loading = document.getElementById('loading');
+    loading.style.display = 'flex';
 
-            // Create form data object
-            const formData = new FormData(form);
-            const data = {};
-            formData.forEach((value, key) => data[key] = value);
+    const formData = new FormData(form);
+    const data = {};
+    
+    // Process all fields
+    formData.forEach((value, key) => {
+        if (!(value instanceof File)) {
+            data[key] = value;
+        }
+    });
 
-            // Send to Google Sheets
-            fetch(SCRIPT_URL + new URLSearchParams(data), {
-                method: 'POST',
-                mode: 'no-cors', // Important for Google Apps Script on static sites
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(data)
-            })
-                .then(() => {
-                    loading.style.display = 'none';
-                    alert('Success! Your ' + data.state + ' form has been recorded.');
-                    form.reset();
-                })
-                .catch(error => {
-                    loading.style.display = 'none';
-                    console.error('Error:', error);
-                    alert('Something went wrong. Check console.');
-                });
-        };
+    // Handle File conversion to Base64
+    const fileInput = form.querySelector('input[type="file"]');
+    if (fileInput && fileInput.files[0]) {
+        const file = fileInput.files[0];
+        const base64 = await new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+        });
+        data['certificate'] = base64;
+        data['certificateName'] = file.name;
+    }
+
+    // Send to Google Sheets using a clean POST
+    fetch(SCRIPT_URL, {
+        method: 'POST',
+        mode: 'no-cors', // Keeps it simple for GAS redirects
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: new URLSearchParams(data)
+    })
+    .then(() => {
+        loading.style.display = 'none';
+        alert('Success! Your ' + (data.state || 'form') + ' has been recorded.');
+        form.reset();
+        document.getElementById('fileName').textContent = 'No file selected';
+    })
+    .catch(error => {
+        loading.style.display = 'none';
+        console.error('Error:', error);
+        alert('Submission failed. Check console for details.');
+    });
+};
+        // --- SUBMISSION LOGIC ---;
 
         // Attach listener to all forms
         document.getElementById('MissouriForm').addEventListener('submit', handleFormSubmit);
